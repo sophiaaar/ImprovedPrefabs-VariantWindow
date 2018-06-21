@@ -5,6 +5,7 @@ using UnityEditor;
 
 public class VariantWindow : EditorWindow {
 	public GameObject parent;
+	Vector2 scrollPos;
 
 	[MenuItem ("Window/Variant Window")]
 	public static void ShowWindow()
@@ -25,6 +26,7 @@ public class VariantWindow : EditorWindow {
 
 		List<Object> variants = GetVariants();
 
+		scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, true);
 		// The group is disabled because we want these ObjectFields to be read-only
 		EditorGUI.BeginDisabledGroup(true);
 		foreach (Object variant in variants)
@@ -39,7 +41,7 @@ public class VariantWindow : EditorWindow {
 			EditorGUILayout.Space();
 		}
 		EditorGUI.EndDisabledGroup();
-		
+		EditorGUILayout.EndScrollView();
 	}
 
 	List<Object> GetVariants()
