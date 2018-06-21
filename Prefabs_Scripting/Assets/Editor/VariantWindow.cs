@@ -69,4 +69,10 @@ public class VariantWindow : EditorWindow {
 		}
 		return variants;
 	}
+
+	void OnInspectorUpdate()
+	{
+		// OnInspectorUpdate is called 10 times per second
+		Repaint();
+	}
 }
