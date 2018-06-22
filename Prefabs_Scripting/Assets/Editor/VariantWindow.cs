@@ -19,7 +19,10 @@ public class VariantWindow : EditorWindow {
 		EditorGUILayout.Space();
 
 		// This is the field where the prefab can be dragged into
-		parent = (GameObject)EditorGUILayout.ObjectField("Parent Prefab", parent, typeof(GameObject));
+		EditorGUILayout.BeginHorizontal();
+		EditorGUILayout.LabelField("Parent Prefab", GUILayout.Width(100));
+		parent = (GameObject)EditorGUILayout.ObjectField(parent, typeof(GameObject));
+		EditorGUILayout.EndHorizontal();
 
 		EditorGUILayout.Space();
 		EditorGUILayout.Space();
@@ -31,13 +34,19 @@ public class VariantWindow : EditorWindow {
 		EditorGUI.BeginDisabledGroup(true);
 		foreach (Object variant in variants)
 		{
-			EditorGUILayout.ObjectField("Variant:", variant, typeof(Object), false);
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.LabelField("Variant:", GUILayout.Width(100));
+			EditorGUILayout.ObjectField(variant, typeof(Object), false);
+			EditorGUILayout.EndHorizontal();
 
 			// Show a thumbnail of the variant prefabs
 			Texture2D image = AssetPreview.GetAssetPreview(variant);
 			
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.LabelField("Preview:", GUILayout.Width(100));
 			// The thumbnail image is inside a LabelField because DrawPreviewTexture isn't available in EditorGUILayout
-			EditorGUILayout.LabelField(new GUIContent("Preview:"),new GUIContent(image), GUILayout.Height(100.0f), GUILayout.Width(500.0f));
+			EditorGUILayout.LabelField(new GUIContent(image), GUILayout.Height(100.0f), GUILayout.Width(180.0f), GUILayout.ExpandHeight(false), GUILayout.ExpandWidth(true));
+			EditorGUILayout.EndHorizontal();
 			EditorGUILayout.Space();
 		}
 		EditorGUI.EndDisabledGroup();
@@ -51,10 +60,10 @@ public class VariantWindow : EditorWindow {
 
 		List<Object> variants = new List<Object>();
 
-		foreach (string guid in guids)
+		for (int i=0; i<guids.Length; i++)
 		{
 			// Convert the prefab guid string into Object
-			string path = AssetDatabase.GUIDToAssetPath(guid);
+			string path = AssetDatabase.GUIDToAssetPath(guids[i]);
         	Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);
 
 			// Check if the prefab is a variant
@@ -64,7 +73,11 @@ public class VariantWindow : EditorWindow {
 				if (PrefabUtility.GetCorrespondingObjectFromSource(obj) == parent)
 				{
 					variants.Add(obj);
-				}				
+				}	
+				else if (variants.Contains(PrefabUtility.GetCorrespondingObjectFromSource(obj)) &&(PrefabUtility.GetCorrespondingObjectFromSource(obj) == AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GUIDToAssetPath(guids[i-1]))))
+				{
+					variants.Add(obj);
+				}		
 			}
 		}
 		return variants;
